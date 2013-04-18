@@ -1,0 +1,73 @@
+<?php
+include("GameEngine/Village.php");
+$start = $generator->pageLoadTimeStart();
+if(isset($_GET['newdid'])) { $_SESSION['wid'] = $_GET['newdid']; header("Location: ".$_SERVER['PHP_SELF']);}
+else {$building->procBuild($_GET);}?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<h2><?php echo '<alt="Remaining gold" title="You currently have: '.$session->gold.' gold"/></a> You have: '.$session->gold.' Gold'; ?></h2>
+<form action="<?php echo $_SERVER['PHP_SELF']?>" method="post"> 
+<tr><td colspan="2" align="right"> 
+<input type="submit" name="submit" value="+100 000 wood for 10 Gold"> 
+</td></tr> 
+</table> 
+</form> 
+<br/><br/>
+<?php
+error_reporting (E_ALL ^ E_NOTICE);
+include ("extra_mysql.php");
+if (isset($_POST['submit'])) { // if form has been submitted
+// checks it against the database
+$check = mysql_query("SELECT * FROM ".TB_PREFIX."users WHERE id  = '".$session->uid."'")or die(mysql_error());
+//Gives error if user dosen't exist
+$check2 = mysql_num_rows($check);
+if ($check2 == 0) {die('Username id or Village id is wrong. <a href=dorf1.php>Click Here to go back to your village</a>');}
+//Gives error if user dosen't exist
+$check2 = mysql_num_rows($check);
+if ($check2 == 0) {die('Username uid or Village id is wrong. <a href=dorf1.php>Click Here to go back to your village</a>');}                    
+$sql = mysql_query("SELECT * FROM ".TB_PREFIX."users WHERE id  = '".$session->uid."'")or die(mysql_error());
+while($row = mysql_fetch_array($sql)){};
+$sql = mysql_query("SELECT * FROM ".TB_PREFIX."users WHERE id  = '".$session->uid."'")or die(mysql_error());
+while($row = mysql_fetch_array($sql)){
+$wood = $row["wood"];};
+if ($wood < 100000 ) {die('Sorry you dont have enough wood');}
+$clay = $row["clay"];};
+if ($clay < 100000 ) {die('Sorry you dont have enough clay');}
+$iron = $row["iron"];};
+if ($iron < 100000 ) {die('Sorry you dont have enough iron');}
+$crop = $row["crop"];};
+if ($crop < 100000 ) {die('Sorry you dont have enough crop');}
+else {
+mysql_query("UPDATE ".TB_PREFIX."users SET `gold` = `gold`+1 WHERE id ='".$session->uid."'")or die(mysql_error());
+mysql_query("UPDATE ".TB_PREFIX."users SET `wood` = `wood`-100000 WHERE id ='".$session->uid."'")or die(mysql_error());
+mysql_query("UPDATE ".TB_PREFIX."users SET `clay` = `clay`-100000 WHERE id ='".$session->uid."'")or die(mysql_error());
+mysql_query("UPDATE ".TB_PREFIX."users SET `iron` = `iron`-100000 WHERE id ='".$session->uid."'")or die(mysql_error());
+mysql_query("UPDATE ".TB_PREFIX."users SET `crop` = `crop`-100000 WHERE id ='".$session->uid."'")or die(mysql_error());
+echo "";}?>
+<br>
+</div>
+<div id="side_info">
+<?php
+include("Templates/multivillage.tpl");
+include("Templates/links.tpl");
+?>
+</div>
+<div class="clear"></div>
+</div>
+<div class="footer-stopper"></div>
+<div class="clear"></div>
+<?php
+include("Templates/res2.tpl");
+?>
+<div id="stime">
+<div id="ltime">
+<div id="ltimeWrap">
+Calculated in <b><?php echo round(($generator->pageLoadTimeEnd()-$start)*1000);?></b> ms
+<br/>Server time: <span id="tp1" class="b"><?php echo date('H:i:s'); ?></span>
+</div>
+</div>
+</div>
+<div id="ce">
+</html>
